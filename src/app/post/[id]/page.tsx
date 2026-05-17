@@ -13,7 +13,7 @@ export default function PostDetailPage() {
 
   useEffect(() => {
     // Fetch only this specific post
-    fetch(`http://localhost:5000/api/posts/${id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setPost(data);

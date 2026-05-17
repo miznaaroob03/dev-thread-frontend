@@ -6,7 +6,7 @@ export default function CommentSection({ postId, currentUserEmail }: any) {
 
   // Fetch comments
   const fetchComments = async () => {
-    const res = await fetch(`http://localhost:5000/api/posts/${postId}/comments`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${postId}/comments`);
     const data = await res.json();
     setComments(data);
   };
@@ -16,7 +16,7 @@ export default function CommentSection({ postId, currentUserEmail }: any) {
   const handlePostComment = async () => {
     if (!newComment || !currentUserEmail) return;
 
-    await fetch('http://localhost:5000/api/comments', {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

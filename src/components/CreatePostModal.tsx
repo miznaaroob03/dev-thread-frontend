@@ -15,7 +15,7 @@ export default function CreatePostModal({ isOpen, onClose, communityName }: any)
     if (!session?.user?.email) return alert("You must be logged in to post!");
 
     try {
-      const res = await fetch('http://localhost:5000/api/posts', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

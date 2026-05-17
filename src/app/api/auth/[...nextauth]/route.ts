@@ -11,7 +11,7 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         // This calls the backend route you just created in Step 3/5
-        const res = await fetch("http://localhost:5000/api/users/login-check", {
+        const res = await fetch("${process.env.NEXT_PUBLIC_API_URL}/api/users/login-check", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(credentials),

@@ -23,7 +23,7 @@ const [imageUrl, setImageUrl] = useState('');
 
   // --- FUNCTION: RE-USABLE POST REFRESHER (OPTION A) ---
   const fetchCommunityPosts = () => {
-    fetch(`http://localhost:5000/api/communities/${communityName}/posts`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/communities/${communityName}/posts`)
       .then(res => res.json())
       .then(data => {
         setPosts(Array.isArray(data) ? data : []);
@@ -39,7 +39,7 @@ const [imageUrl, setImageUrl] = useState('');
     // 1. Fetch community metadata (Member Count & Join Status)
     const fetchCommunityMetadata = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/communities/${communityName}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/communities/${communityName}`);
         if (res.ok) {
           const data = await res.json();
           setMemberCount(data._count?.members || 0);
@@ -71,7 +71,7 @@ const [imageUrl, setImageUrl] = useState('');
 
     const action = isMember ? 'leave' : 'join';
     try {
-      const response = await fetch(`http://localhost:5000/api/communities/${communityName}/${action}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/communities/${communityName}/${action}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userEmail: session.user.email })
@@ -96,7 +96,7 @@ const [imageUrl, setImageUrl] = useState('');
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/posts', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -28,8 +28,8 @@ export default function Home() {
     
     // UPDATED: Dynamically inject userEmail and sortBy query parameters together
     const url = session?.user?.email 
-      ? `http://localhost:5000/api/posts?userEmail=${session.user.email}&sortBy=${sortBy}`
-      : `http://localhost:5000/api/posts?sortBy=${sortBy}`;
+      ? `${process.env.NEXT_PUBLIC_API_URL}/api/posts?userEmail=${session.user.email}&sortBy=${sortBy}`
+      : `${process.env.NEXT_PUBLIC_API_URL}/api/posts?sortBy=${sortBy}`;
 
     fetch(url)
       .then((res) => res.json())
@@ -48,7 +48,7 @@ export default function Home() {
     if (!session) return alert("You must be logged in to post!");
 
     try {
-      const response = await fetch('http://localhost:5000/api/posts', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

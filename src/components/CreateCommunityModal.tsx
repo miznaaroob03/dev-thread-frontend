@@ -13,7 +13,7 @@ export default function CreateCommunityModal({ isOpen, onClose }: { isOpen: bool
   const handleSubmit = async () => {
     if (!name) return alert("Name is required");
 
-    const res = await fetch('http://localhost:5000/api/communities', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/communities', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, description })

@@ -14,7 +14,7 @@ export default function Sidebar() {
   useEffect(() => {
   const controller = new AbortController(); // 1. Create controller
 
-  fetch('http://localhost:5000/api/communities', { signal: controller.signal }) // 2. Pass signal
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/communities', { signal: controller.signal }) // 2. Pass signal
     .then(res => {
       if (!res.ok) throw new Error("Server error");
       return res.json();

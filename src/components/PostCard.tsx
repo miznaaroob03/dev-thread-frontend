@@ -45,7 +45,7 @@ export default function PostCard({
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/posts/${id}/vote`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}/vote`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ voteType: type, userEmail: session?.user?.email }),
@@ -66,7 +66,7 @@ export default function PostCard({
     e.stopPropagation(); 
     if (!confirm("Are you sure you want to delete this?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/posts/${id}`, { 
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`, { 
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userEmail: session?.user?.email }) 
@@ -91,7 +91,7 @@ export default function PostCard({
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/comments`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -119,7 +119,7 @@ export default function PostCard({
     if (!confirm("Delete this comment?")) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/comments/${commentId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments/${commentId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userEmail: session?.user?.email })
