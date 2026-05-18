@@ -10,8 +10,8 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // This calls the backend route you just created in Step 3/5
-        const res = await fetch("${process.env.NEXT_PUBLIC_API_URL}/api/users/login-check", {
+        // FIXED: Using true backticks (`) instead of double quotes (") so the environment variable resolves!
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(credentials),
@@ -31,7 +31,7 @@ const handler = NextAuth({
     strategy: "jwt",
   },
   pages: {
-    signIn: "/login", // Redirects here if user isn't logged in
+    signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
 });
