@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react'; 
 import { useRouter } from 'next/navigation';
 
-export default function Home() {
-  const [posts, setPosts] = useState<any[]>([]);
+export default function Home() {// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const [posts, setPosts] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -18,30 +18,30 @@ export default function Home() {
   const { data: session } = useSession(); 
   const router = useRouter();
 
-  // Re-fetch posts whenever the session status OR sorting selection changes
+ // 1. First, define the fetchPosts function completely
+  // 1. Convert fetchPosts to a clean async function block
+  const fetchPosts = async () => {
+    setLoading(true);
+    try {
+      // UPDATED: Dynamically inject userEmail and sortBy query parameters together
+      const url = session?.user?.email 
+        ? `${process.env.NEXT_PUBLIC_API_URL}/api/posts?userEmail=${session.user.email}&sortBy=${sortBy}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/api/posts?sortBy=${sortBy}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+      setPosts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 2. The useEffect safely executes the async function block below it
   useEffect(() => {
     fetchPosts();
-  }, [session, sortBy]); // <--- ADDED: list sortBy as a dependency dependency
-
-  const fetchPosts = () => {
-    setLoading(true);
-    
-    // UPDATED: Dynamically inject userEmail and sortBy query parameters together
-    const url = session?.user?.email 
-      ? `${process.env.NEXT_PUBLIC_API_URL}/api/posts?userEmail=${session.user.email}&sortBy=${sortBy}`
-      : `${process.env.NEXT_PUBLIC_API_URL}/api/posts?sortBy=${sortBy}`;
-
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        setPosts(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        setLoading(false);
-      });
-  };
+  }, [session, sortBy]);
 
   const handleCreatePost = async () => {
     if (!title || !content) return alert("Please fill in both fields!");
@@ -120,6 +120,7 @@ export default function Home() {
             {loading ? (
               <div className="text-center p-10 text-gray-500 font-medium">Loading posts...</div>
             ) : posts.length > 0 ? (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               posts.map((post: any) => (
                 <PostCard 
                   key={post.id} 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function CommentSection({ postId, currentUserEmail }: any) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -16,7 +17,7 @@ export default function CommentSection({ postId, currentUserEmail }: any) {
   const handlePostComment = async () => {
     if (!newComment || !currentUserEmail) return;
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments', {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

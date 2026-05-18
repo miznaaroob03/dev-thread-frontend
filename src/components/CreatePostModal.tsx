@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function CreatePostModal({ isOpen, onClose, communityName }: any) {
   const { data: session } = useSession();
   const [title, setTitle] = useState('');

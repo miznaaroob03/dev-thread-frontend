@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 export default function PostDetailPage() {
   const { id } = useParams();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [post, setPost] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 

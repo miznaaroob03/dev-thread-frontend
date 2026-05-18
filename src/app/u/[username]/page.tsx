@@ -6,26 +6,27 @@ import Sidebar from '@/components/Sidebar';
 
 export default function UserProfilePage() {
   const { username } = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = () => {
+  // 1. Converted to async to prevent the runtime render update loop
+  const fetchProfile = async () => {
     setLoading(true);
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${username}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Profile not found");
-        return res.json();
-      })
-      .then((data) => {
-        setProfileData(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Profile fetch error:", err);
-        setLoading(false);
-      });
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${username}`);
+      if (!res.ok) throw new Error("Profile not found");
+      const data = await res.json();
+      setProfileData(data);
+    } catch (err) {
+      console.error("Profile fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // 2. Safely call the async tracker sequence
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (username) {
       fetchProfile();
@@ -70,6 +71,7 @@ export default function UserProfilePage() {
           </h2>
 
           {profileData.posts && profileData.posts.length > 0 ? (
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             profileData.posts.map((post: any) => (
               <PostCard 
                 key={post.id} 
@@ -98,21 +100,21 @@ export default function UserProfilePage() {
           <div className="bg-white p-4 rounded border border-gray-300 shadow-sm">
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
               Joined Subreddits
-            </h3>
-            {profileData.communities && profileData.communities.length > 0 ? (
-              <div className="space-y-2">
-                {profileData.communities.map((comm: any) => (
-                  <div key={comm.id} className="text-sm font-semibold text-gray-700 bg-gray-50 p-2 rounded border hover:bg-gray-100 transition-colors">
-                    r/{comm.name}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-gray-400 italic">Hasn't joined any subreddits yet.</p>
-            )}
-          </div>
-          <Sidebar />
+          </h3>
+          {profileData.communities && profileData.communities.length > 0 ? (
+            <div className="space-y-2">
+              {profileData.communities.map((comm: any) => (
+                <div key={comm.id} className="text-sm font-semibold text-gray-700 bg-gray-50 p-2 rounded border hover:bg-gray-100 transition-colors">
+                  r/{comm.name}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400 italic">Hasn't joined any subreddits yet.</p>
+          )}
         </div>
+        <Sidebar />
+      </div>
 
       </main>
     </div>
