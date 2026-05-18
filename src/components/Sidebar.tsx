@@ -1,37 +1,45 @@
-"use client"
+"use client";
+
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Hash, Plus } from 'lucide-react';
 import { useSession } from "next-auth/react";
 import CreateCommunityModal from './CreateCommunityModal';
 
+// 1. Explicitly map your community structure to pass strict TypeScript compilation
+interface CommunityProps {
+  id: string | number;
+  name: string;
+}
+
 export default function Sidebar() {
-  const [communities, setCommunities] = useState([]);
-  const [loading, setLoading] = useState(true); // Added loading state
+  // 2. Add the type fallback so it does not implicitly resolve to never[]
+  const [communities, setCommunities] = useState<CommunityProps[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session } = useSession();
 
   useEffect(() => {
-  const controller = new AbortController(); // 1. Create controller
+    const controller = new AbortController();
 
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/communities', { signal: controller.signal }) // 2. Pass signal
-    .then(res => {
-      if (!res.ok) throw new Error("Server error");
-      return res.json();
-    })
-    .then(data => {
-      if (Array.isArray(data)) setCommunities(data);
-      setLoading(false);
-    })
-    .catch(err => {
-      if (err.name !== 'AbortError') { // 3. Ignore abort errors
-        console.error("Sidebar fetch error:", err);
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/communities`, { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error("Server error");
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data)) setCommunities(data);
         setLoading(false);
-      }
-    });
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Sidebar fetch error:", err);
+          setLoading(false);
+        }
+      });
 
-  return () => controller.abort(); // 4. Cleanup on unmount
-}, []);
+    return () => controller.abort();
+  }, []);
 
   return (
     <div className="w-64 bg-white border border-gray-300 rounded p-4 hidden md:block h-fit sticky top-20">
@@ -43,7 +51,7 @@ export default function Sidebar() {
         {loading ? (
           <p className="text-xs text-gray-400">Loading communities...</p>
         ) : communities.length > 0 ? (
-          communities.map((community: any) => (
+          communities.map((community) => (
             <Link 
               key={community.id} 
               href={`/r/${community.name}`} 
@@ -72,7 +80,6 @@ export default function Sidebar() {
         isOpen={isModalOpen} 
         onClose={() => {
           setIsModalOpen(false);
-          // Optional: Refresh list after closing modal
         }} 
       />
     </div>
